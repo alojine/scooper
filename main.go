@@ -1,7 +1,7 @@
 package main
 
-import "alojine/scooper/scrape"
+import "alojine/scooper/web"
 
 func main() {
-	scrape.GetContent("www.rand.org")
+	web.GetContent("www.rand.org")
 }
