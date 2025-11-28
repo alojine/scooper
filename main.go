@@ -1,7 +1,13 @@
 package main
 
-import "alojine/scooper/web"
+import (
+	"alojine/scooper/web"
+	"alojine/scooper/writer"
+)
 
 func main() {
-	web.GetContent("www.rand.org")
+	domain := "www.promotions.com"
+
+	content := web.GetContent(domain)
+	writer.WriteDataToFile(domain, content)
 }
