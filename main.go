@@ -8,6 +8,7 @@ import (
 func main() {
 	domain := "www.promotions.com"
 
-	content := web.GetContent(domain)
+	// content := web.GetContent(domain)
+	web.GetIPInfo(domain)
 	writer.WriteDataToFile(domain, content)
 }
