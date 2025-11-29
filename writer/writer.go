@@ -1,6 +1,7 @@
 package writer
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -14,9 +15,6 @@ func WriteDataToFile(fileName string, data []byte) {
 		log.Fatal("no file name was provided")
 	}
 
-	currentTime := time.Now().String()
-	completeFilePath := defaultStoragePath + fileName + "_" + currentTime
-
 	if data == nil {
 		log.Fatal("no data was provided")
 	}
@@ -27,8 +25,18 @@ func WriteDataToFile(fileName string, data []byte) {
 		}
 	}
 
-	err := os.WriteFile(completeFilePath, data, defaultFilePermissions)
+	storageFilePath := getStorageFilePath(fileName)
+	err := os.WriteFile(storageFilePath, data, defaultFilePermissions)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func getStorageFilePath(fileName string) string {
+	t := time.Now()
+	formattedTime := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+	completeFilePath := defaultStoragePath + fileName + "_" + formattedTime
+	return completeFilePath
 }
