@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"regexp"
 )
 
 const httpPrefix = "http://"
@@ -36,7 +37,8 @@ func GetContent(domain string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	return body, nil
+	rawContent := stripHTMLTags(body)
+	return rawContent, nil
 }
 
 func GetIPInfo(domain string) (IPInfo, error) {
@@ -60,4 +62,9 @@ func GetIPInfo(domain string) (IPInfo, error) {
 	}
 
 	return result, nil
+}
+
+func stripHTMLTags(content []byte) []byte {
+	re := regexp.MustCompile(`<[^>]*>`)
+	return []byte(re.ReplaceAllString(string(content), ""))
 }
