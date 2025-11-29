@@ -18,6 +18,16 @@ func runCLI() {
 		os.Exit(1)
 	}
 
+	ipInfo, err := web.GetIPInfo(*domain)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("IPv4: ", ipInfo.IPv4)
+		if ipInfo.IPv6 != nil {
+			fmt.Println("IPv6: ", ipInfo.IPv6)
+		}
+	}
+
 	contenent, err := web.GetContent(*domain)
 	if err != nil {
 		log.Fatalf("error wile getting content: %v", err)
