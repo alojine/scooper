@@ -7,6 +7,7 @@ import (
 )
 
 const defaultFilePermissions = 0644
+const defaultStoragePath = "./storage/"
 
 func WriteDataToFile(fileName string, data []byte) {
 	if fileName == "" {
@@ -14,12 +15,19 @@ func WriteDataToFile(fileName string, data []byte) {
 	}
 
 	currentTime := time.Now().String()
-	completeFileName := fileName + "_" + currentTime
+	completeFilePath := defaultStoragePath + fileName + "_" + currentTime
 
 	if data == nil {
 		log.Fatal("no data was provided")
 	}
-	err := os.WriteFile(completeFileName, data, defaultFilePermissions)
+
+	if _, err := os.Stat(defaultStoragePath); err != nil {
+		if os.IsNotExist(err) {
+			os.Mkdir(defaultStoragePath, defaultFilePermissions)
+		}
+	}
+
+	err := os.WriteFile(completeFilePath, data, defaultFilePermissions)
 	if err != nil {
 		log.Fatal(err)
 	}
