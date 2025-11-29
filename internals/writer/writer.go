@@ -2,7 +2,6 @@ package writer
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 )
@@ -10,26 +9,25 @@ import (
 const defaultFilePermissions = 0644
 const defaultStoragePath = "./storage/"
 
-func WriteDataToFile(fileName string, data []byte) {
+func WriteDataToFile(fileName string, data []byte) error {
 	if fileName == "" {
-		log.Fatal("no file name was provided")
+		return fmt.Errorf("no file name was provided")
 	}
 
 	if data == nil {
-		log.Fatal("no data was provided")
+		return fmt.Errorf("no data was provided")
 	}
 
-	if _, err := os.Stat(defaultStoragePath); err != nil {
-		if os.IsNotExist(err) {
-			os.Mkdir(defaultStoragePath, defaultFilePermissions)
-		}
+	if err := os.MkdirAll(defaultStoragePath, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create directory for file storing: %w", err)
 	}
 
 	storageFilePath := getStorageFilePath(fileName)
-	err := os.WriteFile(storageFilePath, data, defaultFilePermissions)
-	if err != nil {
-		log.Fatal(err)
+	if err := os.WriteFile(storageFilePath, data, defaultFilePermissions); err != nil {
+		return fmt.Errorf("failed to write file: %w", err)
 	}
+
+	return nil
 }
 
 func getStorageFilePath(fileName string) string {

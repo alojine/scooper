@@ -3,7 +3,6 @@ package web
 import (
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 )
@@ -15,24 +14,29 @@ type IPInfo struct {
 	IPv6 []string
 }
 
-func GetContent(domain string) []byte {
+func GetContent(domain string) ([]byte, error) {
 	url := httpPrefix + domain
 
-	resp, err := http.Get(url)
-
-	if err != nil {
-		log.Fatal(err)
+	client := &http.Client{
+		Timeout: 10 * 1e9,
 	}
 
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to GET %s, %w", url, err)
+	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	log.Print(string(body))
-	return body
+	return body, nil
 }
 
 func GetIPInfo(domain string) (IPInfo, error) {
