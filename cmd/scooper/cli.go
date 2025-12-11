@@ -2,7 +2,6 @@ package main
 
 import (
 	"alojine/scooper/internals/web"
-	"alojine/scooper/internals/writer"
 	"flag"
 	"fmt"
 	"log"
@@ -38,31 +37,20 @@ func ParseFlags() *Config {
 }
 
 func runCLI() {
-	domain := flag.String("domain", "", "Domain to scoop (e.g., example.com)")
-	flag.Parse()
+	cfg := ParseFlags()
 
-	if *domain == "" {
-		fmt.Println("Usage: scooper -domain=<domain>")
-		os.Exit(1)
-	}
-	ipInfo, err := web.GetIPInfo(*domain)
+	html, err := web.GetContent(cfg.Domain)
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		fmt.Println("IPv4: ", ipInfo.IPv4)
-		if ipInfo.IPv6 != nil {
-			fmt.Println("IPv6: ", ipInfo.IPv6)
-		}
 	}
 
-	contenent, err := web.GetContent(*domain)
-	if err != nil {
-		log.Fatalf("error wile getting content: %v", err)
+	results := make(map[string]any)
+
+	if cfg.Raw {
+		results["raw_html"] = string(html)
 	}
 
-	if err := writer.WriteDataToFile(*domain, contenent); err != nil {
-		log.Fatalf("Error writing data: %v", err)
+	if cfg.Text {
+		results["text"] = string(web.StripHTMLTags(html))
 	}
-
-	fmt.Println("Scraping complete. Data saved.")
 }
