@@ -13,7 +13,7 @@ type IPInfo struct {
 }
 
 func GetContent(domain string) ([]byte, error) {
-	url := produceUrl(domain)
+	url := produceURL(domain)
 
 	client := &http.Client{
 		Timeout: 10 * 1e9,
@@ -34,7 +34,7 @@ func GetContent(domain string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	rawContent := stripHTMLTags(body)
+	rawContent := StripHTMLTags(body)
 	return rawContent, nil
 }
 

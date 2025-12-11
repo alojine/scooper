@@ -1,14 +1,18 @@
 package web
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
-const httpPrefix = "http://"
-
-func produceUrl(domain string) string {
-	return domain + httpPrefix
+func produceURL(domain string) string {
+	if strings.HasPrefix(domain, "http://") || strings.HasPrefix(domain, "https://") {
+		return domain
+	}
+	return "hhtp://" + domain
 }
 
-func stripHTMLTags(content []byte) []byte {
+func StripHTMLTags(content []byte) []byte {
 	re := regexp.MustCompile(`<[^>]*>`)
 	return []byte(re.ReplaceAllString(string(content), ""))
 }
