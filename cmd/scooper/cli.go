@@ -17,7 +17,6 @@ func runCLI() {
 		fmt.Println("Usage: scooper -domain=<domain>")
 		os.Exit(1)
 	}
-
 	ipInfo, err := web.GetIPInfo(*domain)
 	if err != nil {
 		log.Fatal(err)

@@ -5,10 +5,7 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"regexp"
 )
-
-const httpPrefix = "http://"
 
 type IPInfo struct {
 	IPv4 []string
@@ -16,7 +13,7 @@ type IPInfo struct {
 }
 
 func GetContent(domain string) ([]byte, error) {
-	url := httpPrefix + domain
+	url := produceUrl(domain)
 
 	client := &http.Client{
 		Timeout: 10 * 1e9,
@@ -62,9 +59,4 @@ func GetIPInfo(domain string) (IPInfo, error) {
 	}
 
 	return result, nil
-}
-
-func stripHTMLTags(content []byte) []byte {
-	re := regexp.MustCompile(`<[^>]*>`)
-	return []byte(re.ReplaceAllString(string(content), ""))
 }
