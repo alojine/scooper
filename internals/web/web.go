@@ -13,7 +13,7 @@ type IPInfo struct {
 	IPv6 []string
 }
 
-func GetContent(domain string) ([]byte, error) {
+func GetHTML(domain string) ([]byte, error) {
 	url := produceURL(domain)
 
 	client := &http.Client{
@@ -38,9 +38,9 @@ func GetContent(domain string) ([]byte, error) {
 	return body, nil
 }
 
-func StripHTMLTags(content []byte) []byte {
+func StripHTMLTags(html []byte) []byte {
 	re := regexp.MustCompile(`<[^>]*>`)
-	return []byte(re.ReplaceAllString(string(content), ""))
+	return []byte(re.ReplaceAllString(string(html), ""))
 }
 
 func GetIPInfo(domain string) (IPInfo, error) {

@@ -39,17 +39,28 @@ func ParseFlags() *Config {
 func runCLI() {
 	cfg := ParseFlags()
 
-	content, err := web.GetContent(cfg.Domain)
+	html, err := web.GetHTML(cfg.Domain)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if cfg.Raw {
-		fmt.Println(string(content))
+		fmt.Println(string(html))
 	}
 
 	if cfg.Text {
-		text := web.StripHTMLTags(content)
+		text := web.StripHTMLTags(html)
 		fmt.Println(string(text))
+	}
+
+	if cfg.Links {
+		urls, err := web.ExtractLinks(html)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		for _, url := range urls {
+			fmt.Println(url)
+		}
 	}
 }
