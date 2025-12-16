@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"regexp"
 )
 
 type IPInfo struct {
@@ -34,8 +35,12 @@ func GetContent(domain string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	rawContent := StripHTMLTags(body)
-	return rawContent, nil
+	return body, nil
+}
+
+func StripHTMLTags(content []byte) []byte {
+	re := regexp.MustCompile(`<[^>]*>`)
+	return []byte(re.ReplaceAllString(string(content), ""))
 }
 
 func GetIPInfo(domain string) (IPInfo, error) {
