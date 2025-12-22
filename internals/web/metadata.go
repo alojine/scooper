@@ -52,3 +52,16 @@ func walkMetadata(n *html.Node, md *Metadata) {
 		walkMetadata(c, md)
 	}
 }
+
+// Recursively extract text from html node, where such node might have child nodes
+func extractText(n *html.Node) string {
+	if n.Type == html.TextNode {
+		return strings.TrimSpace(n.Data)
+	}
+
+	var sb strings.Builder
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		sb.WriteString(extractText(c))
+	}
+	return strings.TrimSpace(sb.String())
+}
