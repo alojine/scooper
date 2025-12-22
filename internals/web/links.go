@@ -21,13 +21,11 @@ func ExtractLinks(htmlContent []byte) ([]string, error) {
 	}
 
 	var urls []string
-
-	walk(doc, &urls)
-
+	walkLinks(doc, &urls)
 	return urls, nil
 }
 
-func walk(n *html.Node, urls *[]string) {
+func walkLinks(n *html.Node, urls *[]string) {
 	if n.Type == html.ElementNode && n.Data == "a" {
 		for _, attr := range n.Attr {
 			if attr.Key == "href" {
@@ -40,7 +38,7 @@ func walk(n *html.Node, urls *[]string) {
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		walk(c, urls)
+		walkLinks(c, urls)
 	}
 }
 

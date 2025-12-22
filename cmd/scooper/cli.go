@@ -61,7 +61,7 @@ func runCLI() {
 	if cfg.Links {
 		urls, err := web.ExtractLinks(html)
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
 
 		for _, url := range urls {
@@ -70,6 +70,11 @@ func runCLI() {
 	}
 
 	if cfg.Meta {
-		web.ExtractMetadata(html)
+		md, err := web.ExtractMetadata(html)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Title: %s\nDescription: %s\nKeywords: %s\n", md.Title, md.Description, md.Keywords)
 	}
 }
