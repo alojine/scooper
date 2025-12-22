@@ -9,6 +9,7 @@ import (
 
 var skipPrefixes = []string{
 	"#",
+	"/",
 	"mailto:",
 	"javascript:",
 }
@@ -45,7 +46,8 @@ func walk(n *html.Node, urls *[]string) {
 
 func shouldSkip(href string) bool {
 	for _, prefix := range skipPrefixes {
-		if strings.HasPrefix(href, prefix) {
+		check := strings.ToLower(href)
+		if strings.HasPrefix(check, prefix) {
 			return true
 		}
 	}
