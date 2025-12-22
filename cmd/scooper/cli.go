@@ -19,7 +19,6 @@ type Config struct {
 func ParseFlags() *Config {
 	cfg := &Config{}
 
-	flag.StringVar(&cfg.Domain, "domain", "", "Domain or URL to scrape")
 	flag.BoolVar(&cfg.Raw, "r", false, "Output raw HTML")
 	flag.BoolVar(&cfg.Text, "t", false, "Output just text without html tags")
 	flag.BoolVar(&cfg.Meta, "m", false, "Output metadata")
@@ -27,10 +26,16 @@ func ParseFlags() *Config {
 
 	flag.Parse()
 
-	if cfg.Domain == "" {
-		fmt.Println("Usage: scooper -domain=<domain>")
+	args := flag.Args()
+	if len(args) == 0 {
+		fmt.Println("Usage: scooper <domain>")
 		flag.PrintDefaults()
 		os.Exit(1)
+	}
+	cfg.Domain = args[0]
+
+	if !cfg.Raw && !cfg.Text && !cfg.Meta && !cfg.Links {
+		cfg.Text = true
 	}
 
 	return cfg
