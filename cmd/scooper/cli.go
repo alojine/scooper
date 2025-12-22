@@ -68,4 +68,8 @@ func runCLI() {
 			fmt.Println(url)
 		}
 	}
+
+	if cfg.Meta {
+		web.ExtractMetadata(html)
+	}
 }
